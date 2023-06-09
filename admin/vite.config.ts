@@ -19,7 +19,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
       manifest: {
-        name: "CrisisCount",
+        name: "CrisisCountAdmin",
         short_name: "crisisCount",
 
         icons: [
