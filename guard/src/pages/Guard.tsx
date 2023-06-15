@@ -29,8 +29,16 @@ const Guard = () => {
           filter: "is_active=eq.true",
         },
         (payload) => {
-          console.log(payload);
-          setActiveEvent(payload.new as Events);
+          console.log("Guard Active ", payload);
+          if (
+            payload.eventType === "INSERT" ||
+            payload.eventType === "UPDATE"
+          ) {
+            const ev = payload.new as Events;
+            if (ev.is_active === true) {
+              setActiveEvent(ev);
+            }
+          }
         }
       )
       .subscribe();
@@ -57,11 +65,15 @@ const Guard = () => {
           filter: `id=eq.${activeEvent.id}`,
         },
         (payload) => {
-          const ev = payload.new as Events;
-          if (ev.is_active === false) {
+          console.log("Guard: ", payload);
+          if (payload.eventType === "DELETE") {
             setActiveEvent(undefined);
+          } else if (payload.eventType === "UPDATE") {
+            const ev = payload.new as Events;
+            if (ev.is_active === false) {
+              setActiveEvent(undefined);
+            }
           }
-          console.log(payload);
         }
       )
       .subscribe();

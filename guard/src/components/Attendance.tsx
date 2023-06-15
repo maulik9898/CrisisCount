@@ -1,7 +1,7 @@
 import supabase from "@/supabase/supabase";
 import { Events } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
-import { User2 } from "lucide-react";
+import { User2, Users2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { Badge } from "./ui/badge";
 
@@ -28,6 +28,7 @@ const Attendance: React.FC<AttendanceProps> = ({ event }) => {
   return (
     <div className="flex items-center">
       <Badge>
+        <Users2 className="mr-2 inline-block" size={16} />
         {count.data ? count.data : 0} / {event.total}
       </Badge>
     </div>

@@ -58,7 +58,7 @@ const Events = () => {
 
   function getEventSubscription(fn: (payload: RealtimeChangesPayload) => void) {
     const events = supabase
-      .channel("custom-all-channel")
+      .channel("event-all-channel")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "events" },

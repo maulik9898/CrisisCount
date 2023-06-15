@@ -47,7 +47,8 @@ const DeleteEvent: React.FC<DeleteEventProps> = ({ id }) => {
   });
   return (
     <Button
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         deleteEvent.mutate();
       }}
       className="mt-2 text-red-400"

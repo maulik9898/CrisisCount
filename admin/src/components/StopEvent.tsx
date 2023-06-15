@@ -46,7 +46,8 @@ const StopEvent: React.FC<StopEventProps> = ({ id }) => {
   });
   return (
     <Button
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         stopEvent.mutate();
       }}
       variant={"destructive"}
