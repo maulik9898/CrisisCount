@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Card } from "./ui/card";
 import { Attendance, Location, RealtimeChangesPayload } from "@/types/types";
 import supabase from "@/supabase/supabase";
+import { useNavigate } from "react-router-dom";
 
 interface LocationCountProps {
   location: Location;
@@ -14,8 +15,9 @@ const LocationCount: React.FC<LocationCountProps> = ({
 }) => {
   const [count, setCount] = React.useState<number>(0);
 
+  const navigate = useNavigate();
+
   const getCount = async () => {
-    console.log("Getting count for", location.name);
     const { count, error } = await supabase
       .from("attendance")
       .select("*", { count: "exact", head: true })
@@ -25,6 +27,7 @@ const LocationCount: React.FC<LocationCountProps> = ({
       console.error(error);
       return;
     }
+    
     if (count === null) {
       setCount(0);
     } else {
@@ -34,7 +37,6 @@ const LocationCount: React.FC<LocationCountProps> = ({
 
   useEffect(() => {
     let events = getEventSubscription((payload) => {
-      console.log(`Attendance ID ${location.name} :`, payload);
       switch (payload.eventType) {
         case "INSERT":
           let record = payload.new as Attendance;
@@ -63,7 +65,7 @@ const LocationCount: React.FC<LocationCountProps> = ({
           event: "INSERT",
           schema: "public",
           table: "attendance",
-          filter: `event_id=eq.${event_id}`,
+          filter: `location_id=eq.${location.id}`,
         },
         fn
       )
@@ -75,7 +77,9 @@ const LocationCount: React.FC<LocationCountProps> = ({
     return events;
   }
   return (
-    <Card className="p-4 flex justify-between text-lg">
+    <Card className="p-4 flex justify-between text-lg hover:cursor-pointer" onClick={() => {
+      navigate(`/event/${event_id}/${location.id}`);
+    }}>
       <p>{location.name}</p>
       <p className="text-gray-400 text-lg font-bold">{count}</p>
     </Card>

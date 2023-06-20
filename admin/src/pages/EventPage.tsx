@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import supabase from "@/supabase/supabase";
 import { Events, Location } from "@/types/types";
 import { ArrowBigLeft, ArrowLeft } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const EventPage = () => {
   const [locations, setLocations] = React.useState<Location[]>([]);
-  let { state } = useLocation();
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [event, setEvent] = React.useState<Events>();
 
   React.useEffect(() => {
     getLocations().then((locations) => {
@@ -19,6 +20,30 @@ const EventPage = () => {
       }
     });
   }, []);
+
+  React.useEffect(() => {
+    getEvent().then((event) => {
+      if (event) {
+        setEvent(event);
+      }
+    });
+  }, []);
+
+  async function getEvent() {
+    let { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", id)
+      .limit(1);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    if (data === null) {
+      return;
+    }
+    return data[0];
+  }
 
   async function getLocations() {
     let { data: events, error } = await supabase.from("location").select("*");
@@ -29,6 +54,17 @@ const EventPage = () => {
 
     return events;
   }
+
+  const eventLocations = useMemo(() => {
+    if (!event) return [];
+    return locations.map((location) => (
+      <LocationCount
+        key={location.id}
+        event_id={event.id}
+        location={location}
+      />
+    ));
+  }, [locations, event]);
 
   return (
     <div className="m-4 flex gap-4 flex-col">
@@ -42,15 +78,8 @@ const EventPage = () => {
           Back
         </Button>
       </div>
-
-      <Event event={state.event} />
-      {locations.map((location) => (
-        <LocationCount
-          key={location.id}
-          event_id={state.event.id}
-          location={location}
-        />
-      ))}
+      {event && <Event event={event} />}
+      {eventLocations}
     </div>
   );
 };

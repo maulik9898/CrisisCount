@@ -26,6 +26,7 @@ const Scan: React.FC<ScanProps> = ({ event_id, location_id }) => {
   const [loading, setLoading] = useState(false);
   const { ref } = useZxing({
     onResult(result) {
+      if (open) return;
       if (!Number.isNaN(parseInt(result.getText()))) {
         setResult(parseInt(result.getText()));
       }
