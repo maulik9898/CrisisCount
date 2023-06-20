@@ -26,11 +26,10 @@ export function DataTablePagination<TData>({
     <div className="flex items-center flex-col gap-4 justify-between px-2">
       <div className="flex w-full justify-between items-center space-x-2">
         <div className="flex text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} row(s)
         </div>
-        <div className="flex items-center  space-x-1">
-          <p className="text-sm font-medium">Rows per page</p>
+        <div className="flex items-center  space-x-1 ">
+          <p className="text-sm font-medium mr-2">Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {

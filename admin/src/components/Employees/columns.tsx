@@ -1,30 +1,9 @@
 import { Employees } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/column-header";
-import { Checkbox } from "../ui/checkbox";
+import { Badge } from "../ui/badge";
 
 export const columns: ColumnDef<Employees>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -33,6 +12,8 @@ export const columns: ColumnDef<Employees>[] = [
     cell: ({ row }) => <div className="w-[40px]">{row.getValue("id")}</div>,
     enableSorting: true,
     enableHiding: true,
+    enableGlobalFilter: true,
+    filterFn: "weakEquals",
   },
   {
     accessorKey: "name",
@@ -46,6 +27,17 @@ export const columns: ColumnDef<Employees>[] = [
     accessorKey: "employee_type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
+    ),
+    cell: ({ row }) => (
+      <Badge
+        className={`${
+          row.getValue("employee_type") === "INTERNAL"
+            ? "bg-green-500"
+            : "bg-blue-500"
+        } text-white`}
+      >
+        {row.getValue("employee_type")}
+      </Badge>
     ),
     enableSorting: true,
     enableHiding: true,
